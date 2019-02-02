@@ -34,7 +34,13 @@ public class ActMember {
         return act;
     }
 
-    public void setAct(Act act) {
-        this.act = act;
+    public void setAct(Act newAct) {
+        if(this.act != null && this.getAct().getActMembers().contains(this)) {
+            this.act.getActMembers().remove(this);
+        }
+        this.act = newAct;
+        if(newAct != null) {
+            newAct.addActMember(this);
+        }
     }
 }

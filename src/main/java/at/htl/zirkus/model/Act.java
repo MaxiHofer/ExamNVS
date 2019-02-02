@@ -14,11 +14,9 @@ public class Act implements Serializable {
     private Long id;
     private String name;
 
-    @JsonbTransient
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ActMember> actMembers;
 
-    @JsonbTransient
     @ManyToMany(mappedBy = "acts", fetch = FetchType.LAZY)
     private List<Show> shows;
 
