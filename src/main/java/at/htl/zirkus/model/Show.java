@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@NamedQuery(name = "Show.findAll", query = "select s from Show s")
+@NamedQuery(name = "Show.findAll", query = "select s from Show s join fetch s.acts")
 public class Show implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,6 @@ public class Show implements Serializable {
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(name = "program")
-    @XmlTransient
     private List<Act> acts;
 
     public Show() {
@@ -34,6 +33,24 @@ public class Show implements Serializable {
         this.showName = showName;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public void addAct(Act act) {
+        if(!acts.contains(act)) {
+            acts.add(act);
+        }
+        if(!act.getShows().contains(this)) {
+            act.addShow(this);
+        }
+    }
+
+    public void removeAct(Act act) {
+        if(acts.contains(act)) {
+            acts.remove(act);
+        }
+        if(act.getShows().contains(this)) {
+            act.removeShow(this);
+        }
     }
 
     public Long getId() {

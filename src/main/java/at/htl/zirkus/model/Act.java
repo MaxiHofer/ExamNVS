@@ -7,6 +7,7 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 
 @Entity
+@NamedQuery(name = "Act.findAll", query = "select a from Act a join fetch a.shows")
 public class Act implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,42 @@ public class Act implements Serializable {
         this.actMembers = actMembers;
     }
 
+    public void addActMember(ActMember actMember) {
+        if(!actMembers.contains(actMember)) {
+            actMembers.add(actMember);
+        }
+        if(actMember.getAct() != this) {
+            actMember.setAct(this);
+        }
+    }
+
+    public void removeActMember(ActMember actMember) {
+        if(actMembers.contains(actMember)) {
+            actMembers.remove(actMember);
+        }
+        if(actMember.getAct() == this) {
+            actMember.setAct(null);
+        }
+    }
+
+    public void addShow(Show show) {
+        if(!shows.contains(show)) {
+            shows.add(show);
+        }
+        if(!show.getActs().contains(this)) {
+            show.addAct(this);
+        }
+    }
+
+    public void removeShow(Show show) {
+        if(shows.contains(show)) {
+            shows.remove(show);
+        }
+        if(show.getActs().contains(this)) {
+            show.removeAct(this);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,5 +92,13 @@ public class Act implements Serializable {
 
     public void setActMembers(List<ActMember> actMembers) {
         this.actMembers = actMembers;
+    }
+
+    public List<Show> getShows() {
+        return shows;
+    }
+
+    public void setShows(List<Show> shows) {
+        this.shows = shows;
     }
 }
